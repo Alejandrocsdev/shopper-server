@@ -40,23 +40,23 @@ class AuthController extends Validator {
   //   sucRes(res, 200, '存取憑證刷新成功', accessToken)
   // })
 
-  // autoSignIn = asyncError(async (req, res, next) => {
-  //   const { userId } = req.params
+  autoSignIn = asyncError(async (req, res, next) => {
+    const { userId } = req.params
 
-  //   const user = await User.findByPk(userId)
+    const user = await User.findByPk(userId)
 
-  //   // 驗證用戶是否存在
-  //   this.validateData([user])
+    // 驗證用戶是否存在
+    this.validateData([user])
 
-  //   const accessToken = encrypt.signAccessToken(userId)
-  //   const refreshToken = encrypt.signRefreshToken(userId)
+    const accessToken = encrypt.signAccessToken(userId)
+    const refreshToken = encrypt.signRefreshToken(userId)
 
-  //   await User.update({ refreshToken }, { where: { id: userId } })
+    await User.update({ refreshToken }, { where: { id: userId } })
 
-  //   cookie.store(res, refreshToken)
+    cookie.store(res, refreshToken)
 
-  //   sucRes(res, 200, '登入成功', accessToken)
-  // })
+    sucRes(res, 200, '登入成功', accessToken)
+  })
 
   // signIn = asyncError(async (req, res, next) => {
   //   const { user } = req

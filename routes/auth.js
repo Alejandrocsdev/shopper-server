@@ -14,7 +14,7 @@ const { pwdSignInAuth, smsSignInAuth } = require('../config/passport')
 // router.get('/refresh', authController.refresh)
 
 // 登入
-// router.post('/signIn/auto/:userId', authController.autoSignIn)
+router.post('/signIn/auto/:userId', authController.autoSignIn)
 // router.post('/signIn/pwd', pwdSignInAuth, authController.signIn)
 // router.post('/signIn/sms', smsSignInAuth, authController.signIn)
 

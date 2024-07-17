@@ -20,6 +20,7 @@ const schema = Joi.object({
   phone: Joi.string().pattern(/^09/).length(10)
 }).xor('email', 'phone')
 // Body驗證條件(extra)
+const booleanBody = { isReset: Joi.boolean().default(false) }
 const otpBody = { otp: Joi.string().length(6).required() }
 
 class VerifyController extends Validator {
@@ -29,15 +30,23 @@ class VerifyController extends Validator {
 
   sendOTP = asyncError(async (req, res, next) => {
     // 驗證請求主體
-    this.validateBody(req.body)
-    const { phone } = req.body
+    this.validateBody(req.body, booleanBody)
+    const { phone, isReset } = req.body
 
     // 生成 OTP
     const otp = encrypt.otp()
     // OTP 有效期限(15分鐘)
     const expireTime = Date.now() + 15 * 60 * 1000
-    // OTP 加密
-    const hashedOtp = await encrypt.hash(otp)
+    // OTP 加密 /
+    const [hashedOtp, user] = await Promise.all([
+      encrypt.hash(otp),
+      User.findOne({ where: { phone } })
+    ])
+
+    if (isReset) {
+      // 驗證用戶是否存在
+      this.validateData([user], `未有使用電話 ${phone} 註冊用戶 `)
+    }
 
     // 建立事務
     const transaction = await sequelize.transaction()
@@ -50,13 +59,10 @@ class VerifyController extends Validator {
         transaction
       })
 
-    // 如果 OTP 記錄已存在，更新 OTP 和 expireTime
-    if (!created) {
-      await otpRecord.update(
-        { otp: hashedOtp, expireTime, attempts: 0 },
-        { transaction }
-      )
-    }
+      // 如果 OTP 記錄已存在，更新 OTP 和 expireTime
+      if (!created) {
+        await otpRecord.update({ otp: hashedOtp, expireTime, attempts: 0 }, { transaction })
+      }
 
       // 提交事務
       await transaction.commit()
@@ -129,60 +135,60 @@ class VerifyController extends Validator {
     }
   })
 
-  // sendLink = asyncError(async (req, res, next) => {
-  //   // 驗證請求主體
-  //   this.validateBody(req.body)
-  //   const { email } = req.body
+  sendLink = asyncError(async (req, res, next) => {
+    // 驗證請求主體
+    this.validateBody(req.body)
+    const { email } = req.body
 
-  //   // 取得用戶資料
-  //   const user = await User.findOne({ where: { email } })
+    // 取得用戶資料
+    const user = await User.findOne({ where: { email } })
 
-  //   // 驗證用戶是否存在
-  //   this.validateData([user])
+    // 驗證用戶是否存在
+    this.validateData([user], `未有使用信箱 ${email} 註冊用戶 `)
 
-  //   // 信箱內容資料
-  //   const username = user.username
-  //   const token = encrypt.signEmailToken(user.id)
-  //   const backUrl =
-  //     process.env.NODE_ENV === 'development'
-  //       ? process.env.BACK_DEV_BASE_URL
-  //       : process.env.BACK_PROD_BASE_URL
-  //   const link = `${backUrl}/verify/link?token=${token}`
+    // 信箱內容資料
+    const username = user.username
+    const token = encrypt.signEmailToken(user.id)
+    const backUrl =
+      process.env.NODE_ENV === 'development'
+        ? process.env.BACK_DEV_BASE_URL
+        : process.env.BACK_PROD_BASE_URL
+    const link = `${backUrl}/verify/link?token=${token}`
 
-  //   // 發送信箱
-  //   await sendMail({ email, username, link }, 'resetLink')
-  //   // 成功回應
-  //   sucRes(res, 200, '信箱OTP發送成功 (gmail)')
-  // })
+    // 發送信箱
+    await sendMail({ email, username, link }, 'resetLink')
+    // 成功回應
+    sucRes(res, 200, '信箱OTP發送成功 (gmail)')
+  })
 
-  // verifyLink = asyncError(async (req, res, next) => {
-  //   const { token } = req.query
+  verifyLink = asyncError(async (req, res, next) => {
+    const { token } = req.query
 
-  //   // 導向前端連結
-  //   const url = (verified, result) => {
-  //     const frontUrl =
-  //       process.env.NODE_ENV === 'development'
-  //         ? process.env.FRONT_DEV_BASE_URL
-  //         : process.env.FRONT_PROD_BASE_URL
-  //     return `${frontUrl}/reset?verified=${verified}&result=${result}`
-  //   }
+    // 導向前端連結
+    const url = (verified, result) => {
+      const frontUrl =
+        process.env.NODE_ENV === 'development'
+          ? process.env.FRONT_DEV_BASE_URL
+          : process.env.FRONT_PROD_BASE_URL
+      return `${frontUrl}/reset?verified=${verified}&result=${result}`
+    }
 
-  //   try {
-  //     const { id } = encrypt.verifyToken(token, 'email')
-  //     const user = await User.findByPk(id)
+    try {
+      const { id } = encrypt.verifyToken(token, 'email')
+      const user = await User.findByPk(id)
 
-  //     if (!user) res.redirect(url(false, 'Email未被註冊'))
+      if (!user) res.redirect(url(false, 'Email未被註冊'))
 
-  //     // 成功回應
-  //     res.redirect(url(true, user.email))
-  //   } catch (err) {
-  //     if (err.name === 'TokenExpiredError') {
-  //       res.redirect(url(false, '連結過期'))
-  //     } else {
-  //       res.redirect(url(false, '連結無效'))
-  //     }
-  //   }
-  // })
+      // 成功回應
+      res.redirect(url(true, user.email))
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        res.redirect(url(false, '連結過期'))
+      } else {
+        res.redirect(url(false, '連結無效'))
+      }
+    }
+  })
 }
 
 module.exports = new VerifyController()

@@ -58,19 +58,19 @@ class AuthController extends Validator {
     sucRes(res, 200, '登入成功', accessToken)
   })
 
-  // signIn = asyncError(async (req, res, next) => {
-  //   const { user } = req
-  //   if (!user) throw new CustomError(401, '登入失敗')
+  signIn = asyncError(async (req, res, next) => {
+    const { user } = req
+    if (!user) throw new CustomError(401, '登入失敗')
 
-  //   const accessToken = encrypt.signAccessToken(user.id)
-  //   const refreshToken = encrypt.signRefreshToken(user.id)
+    const accessToken = encrypt.signAccessToken(user.id)
+    const refreshToken = encrypt.signRefreshToken(user.id)
 
-  //   await User.update({ refreshToken }, { where: { id: user.id } })
+    await User.update({ refreshToken }, { where: { id: user.id } })
 
-  //   cookie.store(res, refreshToken)
+    cookie.store(res, refreshToken)
 
-  //   sucRes(res, 200, '登入成功', accessToken)
-  // })
+    sucRes(res, 200, '登入成功', accessToken)
+  })
 
   signUp = asyncError(async (req, res, next) => {
     // 驗證請求主體

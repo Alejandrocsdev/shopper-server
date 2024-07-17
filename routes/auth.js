@@ -8,7 +8,7 @@ const { checkId } = require('../middlewares')
 const { pwdSignInAuth, smsSignInAuth } = require('../config/passport')
 
 // 驗證參數 userId
-// router.param('userId', checkId)
+router.param('userId', checkId)
 
 // 更新憑證
 // router.get('/refresh', authController.refresh)
@@ -16,7 +16,7 @@ const { pwdSignInAuth, smsSignInAuth } = require('../config/passport')
 // 登入
 router.post('/signIn/auto/:userId', authController.autoSignIn)
 // router.post('/signIn/pwd', pwdSignInAuth, authController.signIn)
-// router.post('/signIn/sms', smsSignInAuth, authController.signIn)
+router.post('/signIn/sms', smsSignInAuth, authController.signIn)
 
 // 註冊
 router.post('/signUp', authController.signUp)

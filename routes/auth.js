@@ -19,7 +19,7 @@ const { pwdSignInAuth, smsSignInAuth } = require('../config/passport')
 // router.post('/signIn/sms', smsSignInAuth, authController.signIn)
 
 // 註冊
-// router.post('/signUp', authController.signUp)
+router.post('/signUp', authController.signUp)
 
 // 登出
 // router.get('/signOut', authController.signOut)

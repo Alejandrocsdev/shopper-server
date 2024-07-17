@@ -72,23 +72,23 @@ class AuthController extends Validator {
   //   sucRes(res, 200, '登入成功', accessToken)
   // })
 
-  // signUp = asyncError(async (req, res, next) => {
-  //   // 驗證請求主體
-  //   this.validateBody(req.body)
-  //   const { phone, password } = req.body
+  signUp = asyncError(async (req, res, next) => {
+    // 驗證請求主體
+    this.validateBody(req.body)
+    const { phone, password } = req.body
 
-  //   const hashedPassword = await encrypt.hash(password)
+    const hashedPassword = await encrypt.hash(password)
 
-  //   // 生成唯一帳號
-  //   const username = await encrypt.uniqueUsername(User)
+    // 生成唯一帳號
+    const username = await encrypt.uniqueUsername(User)
 
-  //   const user = await User.create({ username, password: hashedPassword, phone })
+    const user = await User.create({ username, password: hashedPassword, phone })
 
-  //   const newUser = user.toJSON()
-  //   delete newUser.password
+    const newUser = user.toJSON()
+    delete newUser.password
 
-  //   sucRes(res, 201, '新用戶註冊成功', newUser)
-  // })
+    sucRes(res, 201, '新用戶註冊成功', newUser)
+  })
 
   // signOut = asyncError(async (req, res, next) => {
   //   const cookies = req.cookies

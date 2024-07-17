@@ -12,13 +12,13 @@ const { jwtAuth } = require('../config/passport')
 
 router.route('/phone/:phone')
   .get(usersController.getUserByPhone)
-//   .put(usersController.putUserByPhone)
+  .put(usersController.putUserByPhone)
 
-// router.route('/email/:email')
-//   .put(usersController.putUserByEmail)
+router.route('/email/:email')
+  .put(usersController.putUserByEmail)
 
 // router.route('/me')
-//   .get(jwtAuth, usersController.getAuthUser)
+  // .get(jwtAuth, usersController.getAuthUser)
 
 // router.route('/:userId')
 //   .get(jwtAuth, usersController.getUser)

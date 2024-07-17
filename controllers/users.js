@@ -11,22 +11,22 @@ const Joi = require('joi')
 // 客製化錯誤訊息模組
 const CustomError = require('../errors/CustomError')
 // Body驗證條件(base)
-// const schema = Joi.object({})
+const schema = Joi.object({})
 // 驗證規則
 // const username = Joi.string().min(8).max(16).required()
-// const password = Joi.string().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,16}$/).required()
+const password = Joi.string().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,16}$/).required()
 // const phone = Joi.string().pattern(/^09/).length(10).required()
 // const email = Joi.string().email()
 // const avatar = Joi.string().uri({ scheme: ['https'] }).required()
 // Body驗證條件(extra)
-// const passwordBody = { password }
+const passwordBody = { password }
 // const createBody = { username, password, phone, email, avatar }
 // const updateBody = { username, phone, email, avatar }
 
 class UsersController extends Validator {
-  // constructor() {
-  //   super(schema)
-  // }
+  constructor() {
+    super(schema)
+  }
 
   getUserByPhone = asyncError(async (req, res, next) => {
     const { phone } = req.params
@@ -42,35 +42,35 @@ class UsersController extends Validator {
     }
   })
 
-  // putUserByPhone = asyncError(async (req, res, next) => {
-  //   const { phone } = req.params
+  putUserByPhone = asyncError(async (req, res, next) => {
+    const { phone } = req.params
 
-  //   // 驗證請求主體
-  //   this.validateBody(req.body, passwordBody)
-  //   const { password } = req.body
+    // 驗證請求主體
+    this.validateBody(req.body, passwordBody)
+    const { password } = req.body
 
-  //   const hashedPassword = await encrypt.hash(password)
+    const hashedPassword = await encrypt.hash(password)
 
-  //   // 更新用戶密碼
-  //   await User.update({ password: hashedPassword }, { where: { phone } })
+    // 更新用戶密碼
+    await User.update({ password: hashedPassword }, { where: { phone } })
 
-  //   sucRes(res, 200, `使用電話 ${phone} 更新密碼成功.`)
-  // })
+    sucRes(res, 200, `使用電話 ${phone} 更新密碼成功.`)
+  })
 
-  // putUserByEmail = asyncError(async (req, res, next) => {
-  //   const { email } = req.params
+  putUserByEmail = asyncError(async (req, res, next) => {
+    const { email } = req.params
 
-  //   // 驗證請求主體
-  //   this.validateBody(req.body, passwordBody)
-  //   const { password } = req.body
+    // 驗證請求主體
+    this.validateBody(req.body, passwordBody)
+    const { password } = req.body
 
-  //   const hashedPassword = await encrypt.hash(password)
+    const hashedPassword = await encrypt.hash(password)
 
-  //   // 更新用戶密碼
-  //   await User.update({ password: hashedPassword }, { where: { email } })
+    // 更新用戶密碼
+    await User.update({ password: hashedPassword }, { where: { email } })
 
-  //   sucRes(res, 200, `使用信箱 ${email} 更新密碼成功.`)
-  // })
+    sucRes(res, 200, `使用信箱 ${email} 更新密碼成功.`)
+  })
 
   // getAuthUser = asyncError(async (req, res, next) => {
   //   const { user } = req

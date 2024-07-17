@@ -10,8 +10,8 @@ const { jwtAuth } = require('../config/passport')
 // 驗證參數 userId
 // router.param('userId', checkId)
 
-// router.route('/phone/:phone')
-//   .get(usersController.getUserByPhone)
+router.route('/phone/:phone')
+  .get(usersController.getUserByPhone)
 //   .put(usersController.putUserByPhone)
 
 // router.route('/email/:email')

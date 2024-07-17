@@ -28,19 +28,19 @@ class UsersController extends Validator {
   //   super(schema)
   // }
 
-  // getUserByPhone = asyncError(async (req, res, next) => {
-  //   const { phone } = req.params
+  getUserByPhone = asyncError(async (req, res, next) => {
+    const { phone } = req.params
 
-  //   const user = await User.findOne({ where: { phone } })
+    const user = await User.findOne({ where: { phone } })
 
-  //   if (user) {
-  //     const userData = user.toJSON()
-  //     delete userData.password
-  //     sucRes(res, 200, '取得用戶資料成功', userData)
-  //   } else {
-  //     sucRes(res, 200, `查無電話為${phone}的用戶`)
-  //   }
-  // })
+    if (user) {
+      const userData = user.toJSON()
+      delete userData.password
+      sucRes(res, 200, `電話 ${phone} 已被註冊`, userData)
+    } else {
+      sucRes(res, 200, `電話 ${phone} 尚未被註冊`)
+    }
+  })
 
   // putUserByPhone = asyncError(async (req, res, next) => {
   //   const { phone } = req.params

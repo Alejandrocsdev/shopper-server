@@ -9,11 +9,13 @@ const axios = require('axios')
 const CustomError = require('../../../errors/CustomError')
 
 // TwSMS 簡訊發送器
-async function twsms(phone, otp) {
+async function twsms(data, type) {
   // 簡訊內容
-  const message = `【瞎皮爾購物】輸入 ${otp} 以建立您的帳號，15 分鐘內有效。請不要將驗證碼分享給任何人，包括瞎皮爾員工。`
+  const resetOtpMsg = `【瞎皮爾購物】輸入 ${data.otp} 以建立您的帳號，15 分鐘內有效。請不要將驗證碼分享給任何人，包括瞎皮爾員工。`
+  const resetCompleteMsg = `【瞎皮爾購物】您的密碼最近在 ${data.date} 完成了變更。如果您並未要求更改密碼，請立刻聯絡我們的瞎皮爾客服團隊。`
+  const message = type === 'resetOtp' ? resetOtpMsg : resetCompleteMsg
   // API路徑
-  const API = `${BASE_API}?username=${username}&password=${password}&mobile=${phone}&message=${message}`
+  const API = `${BASE_API}?username=${username}&password=${password}&mobile=${data.phone}&message=${message}`
 
   try {
     if (!username) throw new CustomError(500, '缺少: TwSMS 帳號.')

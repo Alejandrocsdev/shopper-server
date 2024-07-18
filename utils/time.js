@@ -1,5 +1,5 @@
 class Time {
-  emailDate() {
+  notifyDate() {
     const now = new Date()
 
     const year = now.getFullYear()

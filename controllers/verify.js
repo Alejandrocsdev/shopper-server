@@ -67,7 +67,7 @@ class VerifyController extends Validator {
       // 提交事務
       await transaction.commit()
       // 發送簡訊
-      await sendSMS(phone, otp, smsType)
+      await sendSMS({ phone, otp }, 'resetOtp', smsType)
       // 成功回應
       sucRes(res, 200, `簡訊OTP發送成功 (${smsType})`)
     } catch (err) {
@@ -137,7 +137,7 @@ class VerifyController extends Validator {
 
   sendLink = asyncError(async (req, res, next) => {
     // 驗證請求主體
-    this.validateBody(req.body)
+    this.validateBody(req.body, booleanBody)
     const { email } = req.body
 
     // 取得用戶資料

@@ -44,7 +44,7 @@ const emailOptions = {
   }),
   resetComplete: (data) => ({
     ...loadTemplate('resetComplete', { username: data.username, date: data.date }),
-    subject: '您的蝦皮購物密碼已經變更'
+    subject: '您的瞎皮爾購物密碼已經變更'
   })
 }
 

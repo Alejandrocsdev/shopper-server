@@ -21,24 +21,24 @@ class AuthController extends Validator {
     super(schema)
   }
 
-  // refresh = asyncError(async (req, res, next) => {
-  //   const cookies = req.cookies
-  //   if (!cookies?.jwt) throw new CustomError(401, '查無刷新憑證')
+  refresh = asyncError(async (req, res, next) => {
+    const cookies = req.cookies
+    if (!cookies?.jwt) throw new CustomError(401, '查無刷新憑證')
 
-  //   const refreshToken = cookies.jwt
+    console.log(req.body)
 
-  //   console.log('refreshToken', refreshToken)
+    const refreshToken = cookies.jwt
 
-  //   const user = await User.findOne({ where: { refreshToken } })
-  //   const { id } = encrypt.verifyToken(refreshToken, 'RT')
-  //   console.log('id', id)
+    const user = await User.findOne({ where: { refreshToken } })
 
-  //   if (!user || id !== user.id) throw new CustomError(403, '存取憑證刷新失敗')
+    const { id } = encrypt.verifyToken(refreshToken, 'RT')
 
-  //   const accessToken = encrypt.signAccessToken(id)
+    if (!user || id !== user.id) throw new CustomError(403, '存取憑證刷新失敗')
 
-  //   sucRes(res, 200, '存取憑證刷新成功', accessToken)
-  // })
+    const accessToken = encrypt.signAccessToken(id)
+
+    sucRes(res, 200, '存取憑證刷新成功', accessToken)
+  })
 
   autoSignIn = asyncError(async (req, res, next) => {
     const { userId } = req.params
@@ -90,22 +90,23 @@ class AuthController extends Validator {
     sucRes(res, 201, '新用戶註冊成功', newUser)
   })
 
-  // signOut = asyncError(async (req, res, next) => {
-  //   const cookies = req.cookies
-  //   if (!cookies?.jwt) return res.sendSatus(204)
+  signOut = asyncError(async (req, res, next) => {
+    const cookies = req.cookies
+    if (!cookies?.jwt) {
+      return sucRes(res, 200, '登出成功')
+    }
 
-  //   const refreshToken = cookies.jwt
-  //   const user = await User.findOne({ where: { refreshToken } })
+    const refreshToken = cookies.jwt
+    const user = await User.findOne({ where: { refreshToken } })
 
-  //   cookie.clear(res)
+    cookie.clear(res)
 
-  //   if (!user) {
-  //     res.sendSatus(204)
-  //   } else {
-  //     await User.update({ refreshToken: null }, { where: { id: user.id } })
-  //     sucRes(res, 200, '登出成功')
-  //   }
-  // })
+    if (user) {
+      await User.update({ refreshToken: null }, { where: { id: user.id } })
+    }
+
+    return sucRes(res, 200, '登出成功')
+  })
 }
 
 module.exports = new AuthController()

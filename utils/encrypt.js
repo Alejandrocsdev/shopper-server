@@ -128,32 +128,20 @@ class Encrypt {
 
   // Email JWT
   signEmailToken(id) {
-    try {
-      const token = jwt.sign({ id }, process.env.EMAIL_SECRET, { expiresIn: '15m' })
-      return token
-    } catch (err) {
-      throw new CustomError(500, '生成信箱驗證連結憑證失敗')
-    }
+    const token = jwt.sign({ id }, process.env.EMAIL_SECRET, { expiresIn: '15m' })
+    return token
   }
 
   // Access JWT
   signAccessToken(id) {
-    try {
-      const token = jwt.sign({ id }, process.env.AT_SECRET, { expiresIn: '15m' })
-      return token
-    } catch (err) {
-      throw new CustomError(500, '生成存取憑證失敗')
-    }
+    const token = jwt.sign({ id }, process.env.AT_SECRET, { expiresIn: '5s' })
+    return token
   }
 
   // Refresh JWT
   signRefreshToken(id) {
-    try {
-      const token = jwt.sign({ id }, process.env.RT_SECRET, { expiresIn: '7d' })
-      return token
-    } catch (err) {
-      throw new CustomError(500, '生成刷新憑證失敗')
-    }
+    const token = jwt.sign({ id }, process.env.RT_SECRET, { expiresIn: '7d' })
+    return token
   }
 
   // 驗證 JWT
@@ -171,18 +159,8 @@ class Encrypt {
         break
     }
 
-    try {
-      const decoded = jwt.verify(token, secret)
-      return decoded
-    } catch (err) {
-      if (err.name === 'JsonWebTokenError') {
-        throw new CustomError(401, '憑證錯誤')
-      } else if (err.name === 'TokenExpiredError') {
-        throw new CustomError(401, '憑證過期')
-      } else {
-        throw new CustomError(500, '其他憑證驗證錯誤')
-      }
-    }
+    const decoded = jwt.verify(token, secret)
+    return decoded
   }
 }
 

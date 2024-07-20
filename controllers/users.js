@@ -72,11 +72,11 @@ class UsersController extends Validator {
     sucRes(res, 200, `使用信箱 ${email} 更新密碼成功.`)
   })
 
-  // getAuthUser = asyncError(async (req, res, next) => {
-  //   const { user } = req
+  getAuthUser = asyncError(async (req, res, next) => {
+    const { user } = req
 
-  //   sucRes(res, 200, '取得用戶資料成功', user)
-  // })
+    sucRes(res, 200, '取得用戶資料成功', user)
+  })
 
   // getUsers = asyncError(async (req, res, next) => {
   //   const users = await User.findAll()

@@ -17,8 +17,8 @@ router.route('/phone/:phone')
 router.route('/email/:email')
   .put(usersController.putUserByEmail)
 
-// router.route('/me')
-  // .get(jwtAuth, usersController.getAuthUser)
+router.route('/me')
+  .get(jwtAuth, usersController.getAuthUser)
 
 // router.route('/:userId')
 //   .get(jwtAuth, usersController.getUser)

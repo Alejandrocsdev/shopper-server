@@ -11,7 +11,7 @@ const { pwdSignInAuth, smsSignInAuth } = require('../config/passport')
 router.param('userId', checkId)
 
 // 更新憑證
-// router.get('/refresh', authController.refresh)
+router.get('/refresh', authController.refresh)
 
 // 登入
 router.post('/signIn/auto/:userId', authController.autoSignIn)
@@ -22,6 +22,6 @@ router.post('/signIn/sms', smsSignInAuth, authController.signIn)
 router.post('/signUp', authController.signUp)
 
 // 登出
-// router.get('/signOut', authController.signOut)
+router.get('/signOut', authController.signOut)
 
 module.exports = router

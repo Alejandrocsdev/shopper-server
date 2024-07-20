@@ -14,8 +14,7 @@ const corsOptions = {
     process.env.NODE_ENV === 'production'
       ? process.env.FRONT_PROD_BASE_URL
       : process.env.FRONT_DEV_BASE_URL,
-  credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization']
+  credentials: true
 }
 // 引用 Cookie-Parser 中間件
 const cookieParser = require('cookie-parser')

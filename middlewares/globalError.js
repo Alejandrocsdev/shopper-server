@@ -4,6 +4,10 @@ const { errRes } = require('../utils')
 const { BaseError } = require('sequelize')
 // 引用 Sequelize 錯誤訊息模組
 const sequelizeError = require('../errors/sequelizeError')
+// 引用 JsonWebToken 錯誤模組
+const { JsonWebTokenError } = require('jsonwebtoken')
+// 引用 JsonWebToken 錯誤訊息模組
+const jwtError = require('../errors/jwtError')
 // 引用客製化錯誤訊息模組
 const CustomError = require('../errors/CustomError')
 
@@ -16,6 +20,11 @@ function globalError(err, req, res, next) {
   if (err instanceof BaseError) {
     // Sequelize 錯誤
     const { code, message } = sequelizeError(err)
+    err.code = code
+    err.message = message
+  } else if (err instanceof JsonWebTokenError) {
+    // JsonWebToken 錯誤
+    const { code, message } = jwtError(err)
     err.code = code
     err.message = message
   } else if (!(err instanceof CustomError)) {

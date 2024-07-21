@@ -134,7 +134,7 @@ class Encrypt {
 
   // Access JWT
   signAccessToken(id) {
-    const token = jwt.sign({ id }, process.env.AT_SECRET, { expiresIn: '5s' })
+    const token = jwt.sign({ id }, process.env.AT_SECRET, { expiresIn: '15m' })
     return token
   }
 

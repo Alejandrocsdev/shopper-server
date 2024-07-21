@@ -8,12 +8,11 @@ const app = express()
 const port = process.env.PORT
 // 引用 CORS 中間件
 const cors = require('cors')
+// 引用前端網域
+const { frontUrl } = require('./utils')
 // 設定 CORS 的選項，允許來自特定來源的請求，並且允許攜帶憑證
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === 'production'
-      ? process.env.FRONT_PROD_BASE_URL
-      : process.env.FRONT_DEV_BASE_URL,
+  origin: frontUrl,
   credentials: true
 }
 // 引用 Cookie-Parser 中間件

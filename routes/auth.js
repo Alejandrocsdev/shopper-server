@@ -5,7 +5,7 @@ const { authController } = require('../controllers')
 
 const { checkId } = require('../middlewares')
 
-const { pwdSignInAuth, smsSignInAuth, fbCallback, fbSignInAuth } = require('../config/passport')
+const { pwdSignInAuth, smsSignInAuth, fbSignUpCb, fbSignUpAuth } = require('../config/passport')
 
 // 驗證參數 userId
 router.param('userId', checkId)
@@ -17,8 +17,8 @@ router.get('/refresh', authController.refresh)
 router.post('/signIn/auto/:userId', authController.autoSignIn)
 router.post('/signIn/pwd', pwdSignInAuth, authController.signIn)
 router.post('/signIn/sms', smsSignInAuth, authController.signIn)
-router.get('/signIn/facebook/callback', fbCallback)
-router.get('/signIn/facebook', fbSignInAuth)
+router.get('/signUp/facebook/callback', fbSignUpCb)
+router.get('/signUp/facebook', fbSignUpAuth)
 
 // 註冊
 router.post('/signUp', authController.signUp)

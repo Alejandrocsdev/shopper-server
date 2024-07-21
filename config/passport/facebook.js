@@ -2,21 +2,16 @@
 const { Strategy } = require('passport-facebook')
 // 引用 Models
 const { User } = require('../../models')
-// 引用加密模組
-const { encrypt } = require('../../utils')
+// 引用 加密 / 後端網域 模組
+const { encrypt, backUrl } = require('../../utils')
 // 引用客製化錯誤訊息模組
 const CustomError = require('../../errors/CustomError')
-
-const backUrl =
-  process.env.NODE_ENV === 'production'
-    ? process.env.FRONT_PROD_BASE_URL
-    : process.env.FRONT_DEV_BASE_URL
 
 // 資料設定
 const config = {
   clientID: process.env.FACEBOOK_APP_ID,
   clientSecret: process.env.FACEBOOK_APP_SECRET,
-  callbackURL: `${backUrl}/auth/signIn/facebook/callback`,
+  callbackURL: `${backUrl}/auth/signUp/facebook/callback`,
   profileFields: ['email', 'photos']
 }
 

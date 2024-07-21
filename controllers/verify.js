@@ -2,8 +2,8 @@
 const { sequelize, Otp, User } = require('../models')
 // 引用異步錯誤處理中間件
 const { asyncError } = require('../middlewares')
-// 引用 成功回應 / 加密 模組
-const { sucRes, encrypt } = require('../utils')
+// 引用 成功回應 / 加密 / 網域 模組
+const { sucRes, encrypt, backUrl, frontUrl } = require('../utils')
 // 引用自定義驗證模組
 const Validator = require('../Validator')
 // 引用驗證模組
@@ -149,10 +149,6 @@ class VerifyController extends Validator {
     // 信箱內容資料
     const username = user.username
     const token = encrypt.signEmailToken(user.id)
-    const backUrl =
-      process.env.NODE_ENV === 'development'
-        ? process.env.BACK_DEV_BASE_URL
-        : process.env.BACK_PROD_BASE_URL
     const link = `${backUrl}/verify/link?token=${token}`
 
     // 發送信箱
@@ -166,10 +162,6 @@ class VerifyController extends Validator {
 
     // 導向前端連結
     const url = (verified, result) => {
-      const frontUrl =
-        process.env.NODE_ENV === 'development'
-          ? process.env.FRONT_DEV_BASE_URL
-          : process.env.FRONT_PROD_BASE_URL
       return `${frontUrl}/reset?verified=${verified}&result=${result}`
     }
 

@@ -3,8 +3,8 @@ const passport = require('passport')
 
 // 引用 Models
 const { User } = require('../../models')
-// 引用 加密 模組
-const { encrypt } = require('../../utils')
+// 引用 加密 / 前端網域 模組
+const { encrypt, frontUrl } = require('../../utils')
 // 引用客製化錯誤訊息模組
 const CustomError = require('../../errors/CustomError')
 
@@ -26,21 +26,18 @@ const pwdSignInAuth = passport.authenticate('local', { session: false })
 const smsSignInAuth = passport.authenticate('sms', { session: false })
 
 // 臉書登入驗證 / 臉書登入導向
-const fbSignInAuth = passport.authenticate('facebook', { scope: ['email'] })
-const fbCallback = (req, res, next) => {
+const fbSignUpAuth = passport.authenticate('facebook', { scope: ['email'] })
+const fbSignUpCb = (req, res, next) => {
   passport.authenticate('facebook', async (err, user, info) => {
     if (err || !user) {
-      return res.redirect('https://shoper-a5881.web.app?facebook-verified=false')
+      return res.redirect(`${frontUrl}?signUp?facebook=false`)
     }
 
-    const at = encrypt.signAccessToken(user.id)
-    const rt = encrypt.signRefreshToken(user.id)
-
-    await User.update({ refreshToken: rt }, { where: { id: user.id } })
-
-    cookie.store(res, rt)
-
-    res.redirect(`https://shoper-a5881.web.app?access_token=${at}`)
+    // Send user data to the frontend for completing registration
+    const { facebookId, email, avatar } = user
+    res.redirect(
+      `${frontUrl}/signUp?facebook=true&facebookId=${facebookId}&email=${email}&avatar=${avatar}`
+    )
   })(req, res, next)
 }
 
@@ -56,7 +53,7 @@ const jwtAuth = async (req, res, next) => {
     if (!token) {
       throw new CustomError(401, '未提供存取憑證')
     }
-    
+
     const payload = encrypt.verifyToken(token, 'AT')
     const user = await User.findByPk(payload.id)
     if (!user) {
@@ -75,4 +72,4 @@ const jwtAuth = async (req, res, next) => {
   }
 }
 
-module.exports = { passportInit, pwdSignInAuth, smsSignInAuth, fbSignInAuth, fbCallback, jwtAuth }
+module.exports = { passportInit, pwdSignInAuth, smsSignInAuth, fbSignUpAuth, fbSignUpCb, jwtAuth }

@@ -25,19 +25,24 @@ const passportInit = passport.initialize()
 const pwdSignInAuth = passport.authenticate('local', { session: false })
 const smsSignInAuth = passport.authenticate('sms', { session: false })
 
-// 臉書登入驗證 / 臉書登入導向
+// 臉書註冊 / 臉書導向
 const fbSignUpAuth = passport.authenticate('facebook', { scope: ['email'] })
 const fbSignUpCb = (req, res, next) => {
   passport.authenticate('facebook', async (err, user, info) => {
     if (err || !user) {
-      return res.redirect(`${frontUrl}?signUp?facebook=false`)
+      return res.redirect(`${frontUrl}/signUp?facebook=false`)
     }
 
-    // Send user data to the frontend for completing registration
-    const { facebookId, email, avatar } = user
-    res.redirect(
-      `${frontUrl}/signUp?facebook=true&facebookId=${facebookId}&email=${email}&avatar=${avatar}`
-    )
+    const { id, username, facebookId, email, avatar } = user
+    const encodedAvatar = encodeURIComponent(avatar)
+
+    console.log('adkjbc', avatar)
+
+    const path = id
+      ? `${frontUrl}/signUp?fbSigned=true&id=${id}&username=${username}&avatar=${encodedAvatar}`
+      : `${frontUrl}/signUp?facebook=true&facebookId=${facebookId}&email=${email}&avatar=${encodedAvatar}`
+
+    res.redirect(path)
   })(req, res, next)
 }
 

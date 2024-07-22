@@ -12,9 +12,15 @@ const Joi = require('joi')
 const CustomError = require('../errors/CustomError')
 // Body驗證條件(base)
 const schema = Joi.object({
-  phone: Joi.string().pattern(/^09/).length(10).required(),
   password: Joi.string().min(8).max(16).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/).required()
 })
+// Body驗證條件(extra)
+const signUpBody = { phone: Joi.string().pattern(/^09/).length(10).required() }
+const fbBody = { 
+  email: Joi.string().email(),
+  avatar: Joi.string().uri({ scheme: ['https'] }).required(),
+  facebookId: Joi.string().required()
+ }
 
 class AuthController extends Validator {
   constructor() {
@@ -74,7 +80,7 @@ class AuthController extends Validator {
 
   signUp = asyncError(async (req, res, next) => {
     // 驗證請求主體
-    this.validateBody(req.body)
+    this.validateBody(req.body, signUpBody)
     const { phone, password } = req.body
 
     const hashedPassword = await encrypt.hash(password)
@@ -86,6 +92,26 @@ class AuthController extends Validator {
 
     const newUser = user.toJSON()
     delete newUser.password
+
+    sucRes(res, 201, '新用戶註冊成功', newUser)
+  })
+
+  fbSignUp = asyncError(async (req, res, next) => {
+    // 驗證請求主體
+    this.validateBody(req.body, fbBody)
+    const { facebookId, email, avatar, password } = req.body
+    console.log('avatar: ', avatar)
+
+    const hashedPassword = await encrypt.hash(password)
+
+    // 生成唯一帳號
+    const username = await encrypt.uniqueUsername(User)
+
+    const user = await User.create({ username, password: hashedPassword, facebookId, email, avatar })
+
+    const newUser = user.toJSON()
+    delete newUser.password
+    delete newUser.refreshToken
 
     sucRes(res, 201, '新用戶註冊成功', newUser)
   })

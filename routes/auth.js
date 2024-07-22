@@ -22,6 +22,7 @@ router.get('/signUp/facebook', fbSignUpAuth)
 
 // 註冊
 router.post('/signUp', authController.signUp)
+router.post('/signUp/facebook', authController.fbSignUp)
 
 // 登出
 router.get('/signOut', authController.signOut)

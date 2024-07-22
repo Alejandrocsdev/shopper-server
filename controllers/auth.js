@@ -38,6 +38,10 @@ class AuthController extends Validator {
     const user = await User.findOne({ where: { refreshToken } })
 
     const { id } = encrypt.verifyToken(refreshToken, 'RT')
+    console.log('id: ', id)
+    console.log('id typeof: ', typeof id)
+    console.log('user.id: ', user.id)
+    console.log('user.id typeof: ', typeof user.id)
 
     if (!user || id !== user.id) throw new CustomError(403, '存取憑證刷新失敗')
 

@@ -128,19 +128,19 @@ class Encrypt {
 
   // Email JWT
   signEmailToken(id) {
-    const token = jwt.sign({ id }, process.env.EMAIL_SECRET, { expiresIn: '15m' })
+    const token = jwt.sign({ id: Number(id) }, process.env.EMAIL_SECRET, { expiresIn: '15m' })
     return token
   }
 
   // Access JWT
   signAccessToken(id) {
-    const token = jwt.sign({ id }, process.env.AT_SECRET, { expiresIn: '15m' })
+    const token = jwt.sign({ id: Number(id) }, process.env.AT_SECRET, { expiresIn: '15m' })
     return token
   }
 
   // Refresh JWT
   signRefreshToken(id) {
-    const token = jwt.sign({ id }, process.env.RT_SECRET, { expiresIn: '7d' })
+    const token = jwt.sign({ id: Number(id) }, process.env.RT_SECRET, { expiresIn: '7d' })
     return token
   }
 

@@ -14,11 +14,14 @@ router.param('userId', checkId)
 router.get('/refresh', authController.refresh)
 
 // 登入
-router.post('/signIn/auto/:userId', authController.autoSignIn)
+
 router.post('/signIn/pwd', pwdSignInAuth, authController.signIn)
 router.post('/signIn/sms', smsSignInAuth, authController.signIn)
-router.get('/signUp/facebook/callback', fbSignUpCb)
+router.post('/signIn/auto/:userId', authController.autoSignIn)
+
+// 臉書註冊 / 導向
 router.get('/signUp/facebook', fbSignUpAuth)
+router.get('/signUp/facebook/callback', fbSignUpCb)
 
 // 註冊
 router.post('/signUp', authController.signUp)
